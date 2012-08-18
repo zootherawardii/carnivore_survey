@@ -70,9 +70,9 @@
 <html> 
 <head> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /> 
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> <!--
 <meta name="title" content="Jackals, past and present: a survey of the golden jackal in India" />
-<meta name="description" content="Ever seen a jackal in the wild? Come tell us about it! Although it occurs widely in India, we know very little about the jackal. We need help from people like you to understand a few key facts about their distribution and conservation status. So, do come along and participate in this project!"/>
+<meta name="description" content="Ever seen a jackal in the wild? Come tell us about it! Although it occurs widely in India, we know very little about the jackal. We need help from people like you to understand a few key facts about their distribution and conservation status. So, do come along and participate in this project!"/>-->
 <title>Carnivores</title>
 <link href="styles_res_new.css" rel="stylesheet" type="text/css" charset="utf-8" />
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
@@ -235,7 +235,8 @@ border-top:dotted 1px #777;
              }
 
 	     function create_imgthumb(img) {
-	     	      $('#photo_thumb_div').html("<img src='images_tmp/" + img + "' style='height:160px'>");
+	     			
+	     	      $('#photo_thumb_div').html("<img src='image_uploads/" + img + "' style='height:160px'>");
 		      $('#photo_display_div').show();
 		      $('#photo_iframe').hide();
 	     }
@@ -243,9 +244,9 @@ border-top:dotted 1px #777;
 
              function survey_validate() {
 	                                  
-/*
 
                       var user_id = '<? echo $user_id; ?>';
+		      
                       var url_build='';
                       var lname = $('#loc_name').val();
                       var lcity = $('#loc_city').val();
@@ -255,10 +256,17 @@ border-top:dotted 1px #777;
                       var loc_lat =  $('#loc_lat').val();
                       var loc_lng =  $('#loc_lng').val(); 
 
+		      if(loc_lat == '' || loc_lng == '' || loc_zoom == '') {
+		           alert("There is a problem. Please close the form and start all over again.");
+			   return false;
+		      } else {
+		          url_build+= "loc_zoom=" + loc_zoom  + "&loc_lat=" + loc_lat + "&loc_lng=" + loc_lng;
+		      }
+
 
                       if( country.toLowerCase() == 'arunachal pradesh') {
-                           $('#loc_state_' + genid).val('Arunachal Pradesh');
-                           $('#loc_country_' + genid).val('India');
+                           $('#loc_state').val('Arunachal Pradesh');
+                           $('#loc_country').val('India');
                       }
                       
                       if (lname == '') {
@@ -297,13 +305,13 @@ border-top:dotted 1px #777;
                             return false;
                       } else {
 		            url_build+="&spimg=" + species_img;
-			    var img_caption = $('#photo_caption').val();
+			    /*var img_caption = $('#photo_caption').val();
 			    if(img_caption == '') {
 			       alert("Please add a caption to your story.");
 			       return false;
 			    } else {
 			       url_build+="&img_caption=" + img_caption;
-			    }
+			    } */
                       }
 
 
@@ -334,10 +342,7 @@ border-top:dotted 1px #777;
 		      	     url_build+="&habitat_type=" + habitat_type;
 		      }
 
-*/
-		      //alert(url_build);                  
-		      $.jGrowl("Thank you! Your location has been successfully added.");
-		      return false;
+		      var data = url_build;
                  
                       $.ajax({
                          url: "submit_survey.php",
@@ -345,9 +350,16 @@ border-top:dotted 1px #777;
                          data: data,
                          cache: false,
                          success: function (html) {
+			   
                              if(html == '1') {
                                $.jGrowl("Thank you! Your location has been successfully added.");
-                               $('#' + genid).trigger('click');
+			       // $('#survey_form_ul input[type=text]').val('');
+			       // $('#survey_form_ul input[type=hidden]').val('');
+			       // $('#survey_form_ul select').val('');
+                               // $('#survey_form_ul').hide();
+
+			       $('#photo_remove').trigger('click');
+			       $('#remove_loc').trigger('click');
                                $('#marker_count').val('0');
                                get_prev_updates();
                                map.setCenter(india);
@@ -402,6 +414,7 @@ border-top:dotted 1px #777;
                 }
 
 		$('#photo_display_div').hide();
+	
 		$('#survey_form_ul').hide();
 
 		$('#photo_remove').click(function() { 
@@ -418,6 +431,9 @@ border-top:dotted 1px #777;
                        markers[i].setMap(null);
 		      }
 		     $('#marker_count').val('0');
+		     $('#survey_form_ul input[type=text]').val('');
+                     $('#survey_form_ul input[type=hidden]').val('');
+                     $('#survey_form_ul select').val('');
 		     map.setCenter(india);
                      map.setZoom(5);
 		});
@@ -938,7 +954,7 @@ border-top:dotted 1px #777;
         
            <ul class='map_layout'>  
               <li class='map_block'>
-                  <div class='maphelp'>Click ONCE on the location in the map where you've seen jackals. When the map zooms in, drag and position the place marker more precisely.</div>
+                  <div class='maphelp'>Click ONCE on the location in the map where you've seen carnivores. When the map zooms in, drag and position the place marker more precisely.</div>
                   <form action="#" onsubmit="codeAddress(this.address.value); return false"> 
                     <ul class='search'>
                         <li><input id="address" class="defaultText" type="text" value="" title="Eg. Bangalore, Karnataka, India"></li>
@@ -966,7 +982,7 @@ border-top:dotted 1px #777;
                                        <input type="hidden" name="loc_lng" id="loc_lng" value=""> 
                                        <input type="hidden" name="loc_country" id="loc_country" value=""> 
                                        </li> 
-                                <ul></li>  
+                                </ul></li>  
 
                                 <li><ul> 
                                        <li class='oswald_400'>City/District<em>*</em></li> 
@@ -1006,8 +1022,8 @@ border-top:dotted 1px #777;
 				
 				<li><ul id='photo_display_div'>
 					<a id='photo_remove' href='#x'>Remove</a>
-					<div id='photo_thumb_div'></div>
-					<textarea id='photo_caption'></textarea>
+					<div id='photo_thumb_div'>Testing</div>
+					<!--<textarea id='photo_caption'></textarea>-->
 				</ul></li>
 
 				<li><ul>
@@ -1053,7 +1069,9 @@ border-top:dotted 1px #777;
 					<input class='submit' type="submit" name="form_submit" id="submit_survey_form" value="Submit record">
 				</ul></li>
 		          </ul>
-                   <!--<div id='prev_updates'></div>-->
+			  
+			  <div id='prev_updates'></div>
+
               </li>
            </ul>           
 
